@@ -2,6 +2,19 @@
 
 ## [next]
 
+- chore(): Remove old test suite dependencies [#10621](https://github.com/fabricjs/fabric.js/pull/10621)
+- chore(): BREAKING remove exports for parseAttributes, parseStyleAttribute, parseFontDeclaration, parsePointsAttribute, parseTransformAttribute and getCSSRules [#10620](https://github.com/fabricjs/fabric.js/pull/10620)
+- refactor(tests): move svg import tests from qunit to playwright [#10618](https://github.com/fabricjs/fabric.js/pull/10618)
+- ci(): fix Coverage is not being reported anymore [#10617](https://github.com/fabricjs/fabric.js/pull/10617)
+- refactor(tests): move free draw rendering tests from qunit to playwright [#10616](https://github.com/fabricjs/fabric.js/pull/10616)
+- refactor(tests): move resize filter test cases from qunit to playwright [#10615](https://github.com/fabricjs/fabric.js/pull/10615)
+- refactor(tests): move text rendering cases from qunit to playwright [#10613](https://github.com/fabricjs/fabric.js/pull/10613)
+- refactor(tests): move global composite operation tests from qunit to playwright [#10610](https://github.com/fabricjs/fabric.js/pull/10610)
+- refactor(tests): move group layout tests from qunit to playwright [#10609](https://github.com/fabricjs/fabric.js/pull/10609)
+- refactor(tests): move generic rendering tests from qunit to playwright [#10608](https://github.com/fabricjs/fabric.js/pull/10608)
+- refactor(tests): move controls rendering test cases from qunit to playwright [#10605](https://github.com/fabricjs/fabric.js/pull/10605)
+- chore(tests): replace unmaintained http-server with vercels serve [#10603](https://github.com/fabricjs/fabric.js/pull/10603)
+- refactor(tests): move clip path tests from qunit to playwright [#10602](https://github.com/fabricjs/fabric.js/pull/10602)
 - chore(): run npm audit fix to fix a vulnerability report [#10599](https://github.com/fabricjs/fabric.js/pull/10599)
 - refactor(tests): move text path tests from qunit to playwright [#10590](https://github.com/fabricjs/fabric.js/pull/10590)
 - chore(): Deprecate line [#10598](https://github.com/fabricjs/fabric.js/pull/10598)

@@ -7,28 +7,51 @@ import * as fabric from 'fabric/node';
 
 setup();
 
+function dataURLOutputToBuffer(dataURL: string) {
+  const base64Data = dataURL.replace(/^data:image\/png;base64,/, '');
+  return Buffer.from(base64Data, 'base64');
+}
+
 test.describe('VISUAL RENDERING TESTS', () => {
-  for (const testCase of renderTests) {
+  const focusedTests = renderTests.filter((test) => test.only);
+  const casesToRun = focusedTests.length > 0 ? focusedTests : renderTests;
+
+  for (const testCase of casesToRun) {
     if (testCase.disabled === true) {
       continue;
     }
 
     test(testCase.title, async ({ page }, config) => {
+      const goldenName = testCase.golden || `${testCase.title}.png`;
+      const snapshotName = testCase.snapshotSuffix
+        ? [testCase.snapshotSuffix, goldenName]
+        : goldenName;
+
       if (testCase.disabled !== 'browser') {
         await test.step(`browser - ${testCase.title}`, async () => {
           // enable and disable this inside the loop
           config.config.updateSnapshots = 'missing';
-          await page.evaluate(
+          const output = await page.evaluate(
             (testTitle) => renderingTestMap.get(testTitle)(),
             testCase.title,
           );
-          expect(
-            await new CanvasUtil(page).screenshot(),
-            `browser snapshot`,
-          ).toMatchSnapshot({
-            name: testCase.golden || `${testCase.title}.png`,
-            maxDiffPixelRatio: testCase.percentage,
-          });
+          if (output) {
+            expect(
+              dataURLOutputToBuffer(output),
+              `browser snapshot`,
+            ).toMatchSnapshot({
+              name: snapshotName,
+              maxDiffPixelRatio: testCase.percentage,
+            });
+          } else {
+            expect(
+              await new CanvasUtil(page).screenshot(),
+              `browser snapshot`,
+            ).toMatchSnapshot({
+              name: snapshotName,
+              maxDiffPixelRatio: testCase.percentage,
+            });
+          }
         });
       }
       if (testCase.disabled !== 'node') {
@@ -41,16 +64,26 @@ test.describe('VISUAL RENDERING TESTS', () => {
             width: testCase.size[0],
             height: testCase.size[1],
           });
-          await testCase.renderFunction(canvas, fabric);
-          canvas.renderAll();
-          const buffer = canvas.getNodeCanvas().toBuffer();
-          expect(
-            buffer,
-            `node snapshot should match browser snapshot`,
-          ).toMatchSnapshot({
-            name: testCase.golden || `${testCase.title}.png`,
-            maxDiffPixelRatio: testCase.percentage,
-          });
+          const output = await testCase.renderFunction(canvas, fabric);
+          if (output) {
+            expect(
+              dataURLOutputToBuffer(output),
+              `node snapshot should match browser snapshot`,
+            ).toMatchSnapshot({
+              name: snapshotName,
+              maxDiffPixelRatio: testCase.percentage,
+            });
+          } else {
+            canvas.renderAll();
+            const buffer = canvas.getNodeCanvas().toBuffer();
+            expect(
+              buffer,
+              `node snapshot should match browser snapshot`,
+            ).toMatchSnapshot({
+              name: snapshotName,
+              maxDiffPixelRatio: testCase.percentage,
+            });
+          }
         });
       }
     });
